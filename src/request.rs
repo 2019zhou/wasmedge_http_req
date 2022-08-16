@@ -1,14 +1,15 @@
 //! creating and sending HTTP requests
 use crate::{
     error,
-    sslwrapper::{get_receive, send_data},
     response::{find_slice, Headers, Response, CR_LF_2},
+    sslwrapper::set_ssl,
     uri::Uri,
 };
 use std::{
-    convert::TryFrom,
+    convert::{TryFrom, TryInto},
     fmt,
     io::{self, ErrorKind, Read, Write},
+    os::wasi::io::{AsRawFd, RawFd},
     path::Path,
     time::{Duration, Instant},
 };
@@ -910,15 +911,8 @@ impl<'a> Request<'a> {
         let mut stream = TcpStream::connect((host, port))?;
 
         if self.inner.uri.scheme() == "https" {
-            let buf = &self.inner.parse_msg();
-            let body = String::from_utf8_lossy(buf);
-            send_data(host, port.into(), &body);
-
-            let output = get_receive();
-            let tmp = String::from_utf8(output.rcv_vec).unwrap();
-            let mut res_vec = Vec::new();
-            let res = Response::try_from(tmp.as_bytes(), &mut res_vec).unwrap();
-            return Ok(res);
+            set_ssl(stream.to_raw_fd().try_into().unwrap());
+            self.inner.send(&mut stream, writer)
         } else {
             self.inner.send(&mut stream, writer)
         }
