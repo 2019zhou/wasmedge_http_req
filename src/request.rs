@@ -1119,48 +1119,48 @@ mod tests {
             .unwrap();
     }
 
-    #[ignore]
-    #[test]
-    fn request_b_send_secure() {
-        let mut writer = Vec::new();
-        let uri = Uri::try_from(URI_S).unwrap();
+    // #[ignore]
+    // #[test]
+    // fn request_b_send_secure() {
+    //     let mut writer = Vec::new();
+    //     let uri = Uri::try_from(URI_S).unwrap();
 
-        let stream = TcpStream::connect((uri.host().unwrap_or(""), uri.corr_port())).unwrap();
-        let mut secure_stream = tls::Config::default()
-            .connect(uri.host().unwrap_or(""), stream)
-            .unwrap();
+    //     let stream = TcpStream::connect((uri.host().unwrap_or(""), uri.corr_port())).unwrap();
+    //     let mut secure_stream = tls::Config::default()
+    //         .connect(uri.host().unwrap_or(""), stream)
+    //         .unwrap();
 
-        RequestBuilder::new(&Uri::try_from(URI_S).unwrap())
-            .header("Connection", "Close")
-            .send(&mut secure_stream, &mut writer)
-            .unwrap();
-    }
+    //     RequestBuilder::new(&Uri::try_from(URI_S).unwrap())
+    //         .header("Connection", "Close")
+    //         .send(&mut secure_stream, &mut writer)
+    //         .unwrap();
+    // }
 
-    #[test]
-    fn request_b_parse_msg() {
-        let uri = Uri::try_from(URI).unwrap();
-        let req = RequestBuilder::new(&uri);
+    // #[test]
+    // fn request_b_parse_msg() {
+    //     let uri = Uri::try_from(URI).unwrap();
+    //     let req = RequestBuilder::new(&uri);
 
-        const DEFAULT_MSG: &str = "GET /std/string/index.html HTTP/1.1\r\n\
-                                   Referer: http://doc.rust-lang.org/std/string/index.html\r\n\
-                                   Host: doc.rust-lang.org\r\n\r\n";
-        let msg = req.parse_msg();
-        let msg = String::from_utf8_lossy(&msg).into_owned();
+    //     const DEFAULT_MSG: &str = "GET /std/string/index.html HTTP/1.1\r\n\
+    //                                Referer: http://doc.rust-lang.org/std/string/index.html\r\n\
+    //                                Host: doc.rust-lang.org\r\n\r\n";
+    //     let msg = req.parse_msg();
+    //     let msg = String::from_utf8_lossy(&msg).into_owned();
 
-        for line in DEFAULT_MSG.lines() {
-            assert!(msg.contains(line));
-        }
+    //     for line in DEFAULT_MSG.lines() {
+    //         assert!(msg.contains(line));
+    //     }
 
-        for line in msg.lines() {
-            assert!(DEFAULT_MSG.contains(line));
-        }
-    }
+    //     for line in msg.lines() {
+    //         assert!(DEFAULT_MSG.contains(line));
+    //     }
+    // }
 
-    #[test]
-    fn request_new() {
-        let uri = Uri::try_from(URI).unwrap();
-        Request::new(&uri);
-    }
+    // #[test]
+    // fn request_new() {
+    //     let uri = Uri::try_from(URI).unwrap();
+    //     Request::new(&uri);
+    // }
 
     #[test]
     fn request_method() {
